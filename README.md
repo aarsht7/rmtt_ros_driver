@@ -1,6 +1,9 @@
 # rmtt_ros_driver
 ROS driver for DJI RobotMaster TelloTalent drone
 
+python virtual environment is required.
+install with `pip install virtualenv`
+
 Done:
 - take off and land topics
 - cmd_vel topic

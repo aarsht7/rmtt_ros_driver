@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <node name="commande_mocap_xyz" pkg="rmtt_ros_driver" type="commande_mocap_xyz.py" output="screen">
+    
+  </node>
+</launch>

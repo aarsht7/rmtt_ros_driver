@@ -1,8 +1,14 @@
 <?xml version="1.0"?>
 
 <launch>
-  
+
+  <arg name="ip" default="192.168.10.2" />
+
+  <include file="$(dirname)/rmtt_driver.launch">
+      <param name="ip" value="$(arg ip)"/>
+  </include>
   <node name="joy_driver" pkg="joy" type="joy_node" output="screen" />
   <node name="joy_teleop" pkg="rmtt_ros_driver" type="joypad_cmd_vel.py" output="screen" />
+  
   
 </launch>

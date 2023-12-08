@@ -14,6 +14,8 @@ import numpy as np
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Empty
+from std_srvs.srv import Trigger
+
 
 
 # node init
@@ -41,14 +43,24 @@ cmdVelMsg = Twist()
 frequency = 10.0
 Ts = 1.0/frequency
 cmdPubRate = rospy.Rate(frequency)
-
+ns = rospy.get_namespace().replace('/','')
 
 # publishers
 # ----------------
 pubCmdVel = rospy.Publisher('cmd_vel', Twist, queue_size=10)
 pubTakeOff = rospy.Publisher('takeoff', Empty, queue_size=10)
 pubLand = rospy.Publisher('land', Empty, queue_size=10)
+rospy.wait_for_service('/'+ns+"/emergency")
+rospy.loginfo("found emergency service rmtt")
+emergency = rospy.ServiceProxy('/'+ns+"/emergency", Trigger)
 
+rospy.wait_for_service('/'+ns+"/takeoff")
+rospy.loginfo("found takeoff service rmtt")
+takeoff = rospy.ServiceProxy('/'+ns+"/takeoff", Trigger)
+
+rospy.wait_for_service('/'+ns+"/land")
+rospy.loginfo("found land service rmtt")
+land = rospy.ServiceProxy('/'+ns+"/land", Trigger)
 
 # -----------------------------------------------------------------------------
 def callBackJoy(data):
@@ -70,10 +82,10 @@ def callBackJoy(data):
     for i in range(0, len(data.buttons)):
         if buttons == None or data.buttons[i] != buttons[i]:
             if i == 0 and data.buttons[i] == 1: # and flag_land != None:
-                pubLand.publish(Empty())
+                land()
                 print("joy: land")
             if i == 2 and data.buttons[i] == 1: # and flag_takeoff != None:
-                pubTakeOff.publish(Empty())
+                takeoff()
                 print("joy: take off")
                         
     buttons = data.buttons 
@@ -85,7 +97,7 @@ def callBackJoy(data):
 
 # subscribers
 # ------------
-rospy.Subscriber("joy", Joy, callBackJoy)
+rospy.Subscriber("/joy", Joy, callBackJoy)
 
 
 
